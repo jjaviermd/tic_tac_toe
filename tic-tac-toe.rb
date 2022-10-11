@@ -32,16 +32,21 @@ class Board
     end
     puts "Now is player #{player.upcase}'s turn!"
     player
+    box_select
   end
 
   def box_select
     puts "inser two digits. Both 1 to 3"
     input = gets.chomp
     puts "You selected #{input}"
-    
+    input_row = input[0].to_i-1
+    input_colum = input[1].to_i-1
+    play(input_row, input_colum)
   end
 
 end
 
 my_board =  Board.new
+my_board.print_board
 my_board.box_select
+
