@@ -1,12 +1,13 @@
 class Board
   attr_reader :board, :player_x, :player_o, :player
-  attr_writer :player
+  attr_writer :player, :turns
 
   def initialize
     @board = Array.new(3){Array.new(3, " ")} 
     @player_x = "x"
     @player_o = "o"
     @player = player_x
+    @turns = 0
   end
   
   def print_board
@@ -15,13 +16,14 @@ class Board
       puts row.join("I")
       puts "====="
     end
-    game_over if game_over?
-  end
+   end
 
   def play(input_row, input_colum)
     board[input_row][input_colum] = player
     print_board
-    switch_player unless game_over?
+    @turns += 1
+    game_over if game_over?(input_row, input_colum)
+    switch_player unless game_over?(input_row, input_colum)
   end
 
   def switch_player
@@ -30,7 +32,7 @@ class Board
     else
       @player = player_x
     end
-    puts "Now is player #{player.upcase}'s turn!"
+    puts "Now is player #{player.upcase}'s turn"
     player
     box_select
   end
@@ -45,17 +47,25 @@ class Board
     play(input_row, input_colum)
   end
 
-  def game_over?
-    board.reject{|row|row.include?(" ")}.any?{ |row| row == ([row.first] * row.count)}
+  def game_over? (row, col)
+    return true if board.reject{|row|row.include?(" ")}.any?{ |row| row == ([row.first] * row.count)}
+  
+    return true if board[0][col] == board[1][col] && board[0][col] == board[2][col]
+    
+    if row == col
+      return true if board[0][0] == board[1][1] && board[1][1] == board[2][2]
+
+    elsif col == 2 - row
+      return true if board[0][2] == board[1][1] && board[1][1] == board[2][0]
+    end
+  false
   end
 
   def game_over
-    puts "GAME OVER! Player #{player.upcase} won!"
+    puts "GAME OVER! Player #{player.upcase} won! in only #{@turns} turns"
   end
 end
 
 my_board =  Board.new
+my_board.print_board
 my_board.box_select
-
-# ex_arr = [['x', ' ', ' '],['x', ' ', ' '],['x', '', ' ']]
-# ex_arr[0].intersection(ex_arr[1], ex_arr[2])
