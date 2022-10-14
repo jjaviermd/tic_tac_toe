@@ -8,6 +8,7 @@ class Board
     @player_o = "o"
     @player = player_x
     @turns = 0
+    @played_boxes = Array.new
   end
   
   def print_board
@@ -37,14 +38,25 @@ class Board
     box_select
   end
 
+  def valid_move?(inputs)
+    return true unless @played_boxes.include?(inputs)
+    return false
+  end
   def box_select
     puts "inser two digits. Both 1 to 3"
     #add restriction for number ouside range o nonnumbers
     input = gets.chomp
-    puts "You selected #{input}"
-    input_row = input[0].to_i-1
-    input_colum = input[1].to_i-1
-    play(input_row, input_colum)
+    if valid_move?(input)
+      @played_boxes.push(input)
+      puts "You selected #{input}"
+      input_row = input[0].to_i-1
+      input_colum = input[1].to_i-1
+      play(input_row, input_colum)
+    else
+      puts "That box was already played. select other!"
+      box_select
+    end
+    
   end
 
   def game_over? (row, col)
